@@ -1,13 +1,16 @@
-var haslo = "Java Script"; 
+let haslo = "Java Script"; 
 haslo = haslo.toUpperCase(); //Umieszczenie statycznego hasła.
 
-var dlugosc = haslo.length;
-var bledy = 0;
+const dlugosc = haslo.length;
+let bledy = 0;
 
-var yes = new Audio("sound/yes.wav");
-var no = new Audio("sound/no.wav"); //Proste dźwięki przy odgadnianiu hasła.
+const yes = new Audio("sound/yes.wav");
+const no = new Audio("sound/no.wav"); //Proste dźwięki przy odgadnianiu hasła.
 
-var haslo1 = "";
+let haslo1 = "";
+
+let pomoc_stoper = false;
+let pomoc_stoper2 = false;
 
 for(i=0; i<dlugosc; i++)  //Ta pętla podmienia kolejne znaki hasła na myślniki, pozostawiając spacje w nienaruszonym stanie.
 {
@@ -24,16 +27,16 @@ function wypisz_haslo() //Wypisane hasło z podmienionymi znakami.
 
 window.onload = start;
 
-var litery = ["A", "Ą", "B", "C", "Ć", "D", "E", "Ę", "F", "G", "H", "I", "J", "K", "L", "Ł", "M", "N", "Ń", "O", "Ó", "P", "Q", "R", "S", "Ś", "T", "U", "V", "W", "X", "Y", "Z", "Ź", "Ż"];﻿
+const litery = ["A", "Ą", "B", "C", "Ć", "D", "E", "Ę", "F", "G", "H", "I", "J", "K", "L", "Ł", "M", "N", "Ń", "O", "Ó", "P", "Q", "R", "S", "Ś", "T", "U", "V", "W", "X", "Y", "Z", "Ź", "Ż"];﻿
 
 
 function start()
 {
-	var tresc_diva = "";
+	let tresc_diva = "";
 	
 	for(i=0; i<=34; i++) //Tworzenie alfabetu za pomocą JS. ta pętla tworzy 35 divów w którym każdy z nich zawiera swój znak. 
 	{
-		var element = "lit" + i;
+		let element = "lit" + i;
 		tresc_diva = tresc_diva + '<div class="litera" onclick="sprawdz('+i+')" id="'+element+'">'+litery[i]+'</div>';
 		if((i+1) % 7 == 0) //Co siedem znaków umieszczona jest przerwa dająca lepszy efekt wizualny.
 			tresc_diva = tresc_diva + '<div style="clear: both;"> </div>';
@@ -44,6 +47,8 @@ function start()
 	wypisz_haslo();
 	
 	odliczanie(); // Ujawnienie się zegara.
+	
+	poczatek_stopera();
 }
 
 String.prototype.ustawZnak = function(miejsce, znak)
@@ -56,7 +61,13 @@ String.prototype.ustawZnak = function(miejsce, znak)
 
 function sprawdz(nr)
 {
-	var trafiona = false; //Po kliknięciu na litere, każda zostanie zmieniona na czerwoną. Dodatkowy if sprawdzi, czy jednak zamienić ją na zieloną.
+	let trafiona = false; //Po kliknięciu na litere, każda zostanie zmieniona na czerwoną. Dodatkowy if sprawdzi, czy jednak zamienić ją na zieloną.
+	
+	if(pomoc_stoper == false)
+	{
+		zacznij_liczyc();
+		pomoc_stoper == true;
+	}
 	
 	for(i=0; i<dlugosc; i++)
 	{
@@ -70,7 +81,7 @@ function sprawdz(nr)
 	if(trafiona == true)
 	{
 		yes.play();
-		var element = "lit" + nr; //Zmiana stylu diva na zielony.
+		let element = "lit" + nr; //Zmiana stylu diva na zielony.
 		document.getElementById(element).style.background = "#003300";
 		document.getElementById(element).style.color = "#00C000";
 		document.getElementById(element).style.border = "3px solid #00C000";
@@ -81,7 +92,7 @@ function sprawdz(nr)
 	else
 	{
 		no.play();
-		var element = "lit" + nr; //Zmiana stylu diva na czerwony.
+		let element = "lit" + nr; //Zmiana stylu diva na czerwony.
 		document.getElementById(element).style.background = "#330000";
 		document.getElementById(element).style.color = "#C00000";
 		document.getElementById(element).style.border = "3px solid #C00000";
@@ -89,44 +100,79 @@ function sprawdz(nr)
 		document.getElementById(element).setAttribute("onclick",";"); //Zabezpieczenie, by ponowne klikanie wcześniej chybionej litery nie dodawało liczby błędów do wisielca.
 		
 		bledy++;
-		var obraz = "img/s" + bledy + ".jpg"; //podmiana obrazka z folderu "img".
+		let obraz = "img/s" + bledy + ".jpg"; //podmiana obrazka z folderu "img".
 		document.getElementById("szubienica").innerHTML = '<img src="'+obraz+'" alt="" />';
 	}
 	
 	if(haslo == haslo1)
 	{
 		document.getElementById("alfabet").innerHTML = 'Wygrałeś! <br /> <br /> <span class="resetWin" onclick="location.reload()">ZAGRASZ JESZCZE RAZ?</span>'; //Wygrana.
+		
+		pomoc_stoper2 = true;		
 	}
 	
 	if(bledy >= 9)
 	{
 		document.getElementById("alfabet").innerHTML = 'Przegrałeś! <br /> <br /> <span class="resetLose" onclick="location.reload()">ZAGRASZ JESZCZE RAZ?</span>'; //Przegrana.
+		
+		pomoc_stoper2 = true;
 	}
-
 }
 
 function odliczanie()
 {
-	var dzisiaj = new Date();
+	let dzisiaj = new Date();
 	
-	var dzien = dzisiaj.getDate();
+	let dzien = dzisiaj.getDate();
 	if (dzien < 10) dzien = "0"+dzien;
 	
-	var miesiac = dzisiaj.getMonth()+1;
+	let miesiac = dzisiaj.getMonth()+1;
 	if (miesiac < 10) miesiac = "0"+miesiac;
 	
-	var rok = dzisiaj.getFullYear();
+	let rok = dzisiaj.getFullYear();
 	
-	var godzina = dzisiaj.getHours();
+	let godzina = dzisiaj.getHours();
 	if (godzina < 10) godzina = "0"+godzina;
 	
-	var minuta = dzisiaj.getMinutes();
+	let minuta = dzisiaj.getMinutes();
 	if (minuta < 10) minuta = "0"+minuta;
 	
-	var sekunda = dzisiaj.getSeconds();
+	let sekunda = dzisiaj.getSeconds();
 	if (sekunda < 10) sekunda = "0"+sekunda;
 	
 	document.getElementById("zegar").innerHTML = dzien+"/"+miesiac+"/"+rok+" | "+godzina+":"+minuta+":"+sekunda;
 	
 	setTimeout("odliczanie()",1000);
+}
+
+let stoper_minuty = 0;
+let stoper_sekundy = 0;
+let stoper_milisekundy = 0;
+	
+function poczatek_stopera()
+{
+	document.getElementById("stoper_h3").innerHTML = stoper_minuty+":"+stoper_sekundy+":"+stoper_milisekundy;
+}
+
+function zacznij_liczyc()
+{	
+	if(pomoc_stoper = true)
+	{
+		document.getElementById("stoper_h3").innerHTML = stoper_minuty+":"+stoper_sekundy+":"+stoper_milisekundy;
+			
+		stoper_milisekundy = stoper_milisekundy + 1;
+		
+		if(stoper_milisekundy == 10)
+		{
+			stoper_milisekundy = 0;
+			stoper_sekundy++;
+		
+			if(stoper_sekundy == 60)
+			{
+				stoper_sekundy = 0
+				stoper_minuty++;
+			}
+		}
+		if(pomoc_stoper2 == false) setTimeout("zacznij_liczyc()",100)
+	}
 }
