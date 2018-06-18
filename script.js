@@ -1,4 +1,4 @@
-var haslo = "Bez pracy nie ma kołaczy"; 
+var haslo = "Java Script"; 
 haslo = haslo.toUpperCase(); //Umieszczenie statycznego hasła.
 
 var dlugosc = haslo.length;
@@ -42,6 +42,8 @@ function start()
 	document.getElementById("alfabet").innerHTML = tresc_diva;
 	
 	wypisz_haslo();
+	
+	odliczanie(); // Ujawnienie się zegara.
 }
 
 String.prototype.ustawZnak = function(miejsce, znak)
@@ -101,4 +103,30 @@ function sprawdz(nr)
 		document.getElementById("alfabet").innerHTML = 'Przegrałeś! <br /> <br /> <span class="resetLose" onclick="location.reload()">ZAGRASZ JESZCZE RAZ?</span>'; //Przegrana.
 	}
 
+}
+
+function odliczanie()
+{
+	var dzisiaj = new Date();
+	
+	var dzien = dzisiaj.getDate();
+	if (dzien < 10) dzien = "0"+dzien;
+	
+	var miesiac = dzisiaj.getMonth()+1;
+	if (miesiac < 10) miesiac = "0"+miesiac;
+	
+	var rok = dzisiaj.getFullYear();
+	
+	var godzina = dzisiaj.getHours();
+	if (godzina < 10) godzina = "0"+godzina;
+	
+	var minuta = dzisiaj.getMinutes();
+	if (minuta < 10) minuta = "0"+minuta;
+	
+	var sekunda = dzisiaj.getSeconds();
+	if (sekunda < 10) sekunda = "0"+sekunda;
+	
+	document.getElementById("zegar").innerHTML = dzien+"/"+miesiac+"/"+rok+" | "+godzina+":"+minuta+":"+sekunda;
+	
+	setTimeout("odliczanie()",1000);
 }
